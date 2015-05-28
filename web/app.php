@@ -6,7 +6,9 @@ use Symfony\Component\HttpFoundation\Response;
 $app = new Silex\Application();
 
 $app->post('/put', function(Request $request) use ($app){
-    $content = $request->request->get('content');
+    $content = $request->getContent();
+    $json = json_decode($content,true);
+    $content = $json['content'];
     $id = md5(time().uniqid());
     $fp = fopen(__DIR__.'/../data/'.$id,'w+');
     fwrite($fp,$content);
