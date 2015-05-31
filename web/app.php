@@ -33,4 +33,28 @@ $app->get('/get/{id}', function($id) use($app){
     $response->setContent(json_encode($ret));
     return $response;    
 });
+
+$app->get('/get/thumbnail/{id}', function($id) {
+    $file = __DIR__.'/../data/'.$id;
+    if(!file_exists($file)) {
+        return (new Response())->setStatusCode(404);
+    }
+    $file_thumbnail = __DIR__.'/../data/thumbnail_'.$id;
+    if(!file_exists($file_thumbnail)) {
+        $imageString = base64_decode(file_get_contents($file));
+        $image = imagecreatefromstring($imageString);
+        list($width,$height, ) = getimagesizefromstring($imageString);
+        $newWidth = 100;
+        $newHeight = 100*$height/$width;
+        $destinationImage = imagecreatetruecolor($newWidth,$newHeight);
+        imagecopyresampled ( $destinationImage , $image , 0 , 0 , 0 , 0 , $newWidth , $newHeight , $width , $height );
+        imagejpeg($destinationImage,$file_thumbnail);       
+    }
+    $response = new Response();
+    $response->setContent(file_get_contents($file_thumbnail));
+    $response->setStatusCode(200);
+    $response->headers->set('Content-Type','image/jpeg');
+    return $response; 
+
+});
 $app->run();
