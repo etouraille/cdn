@@ -30,6 +30,10 @@ $app->get('/get/{id}', function($id) use($app){
     $ret['success']=$success;
     $response = new Response();
     $response->headers->set('Content-Type','application/json');
+    $response->headers->set('Access-Control-Allow-Methods','GET,OPTIONS,PUT,DELETE');
+    $response->headers->set('Access-Control-Allow-Origin','*');
+    $response->headers->set('Access-Control-Allow-Credential',"true");
+
     $response->setContent(json_encode($ret));
     return $response;    
 });
@@ -54,6 +58,11 @@ $app->get('/get/thumbnail/{id}', function($id) {
     $response->setContent(file_get_contents($file_thumbnail));
     $response->setStatusCode(200);
     $response->headers->set('Content-Type','image/jpeg');
+    $response->headers->set('Access-Control-Allow-Methods','GET,OPTIONS,PUT,DELETE');
+    $response->headers->set('Access-Control-Allow-Origin','*');
+    $response->headers->set('Access-Control-Allow-Credential',"true");
+
+
     return $response; 
 
 });
